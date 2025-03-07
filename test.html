@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Windows PC has been infected</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="favicon.ico" rel="shortcut icon" />
+    <!-- Add this before any jQuery code -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="style.css" rel="stylesheet" />
+    <style>
+      /* Custom styles for the Windows logo */
+      .windows-logo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        width: 150px;
+        height: 150px;
+      }
+      .windows-logo div {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen container bg-[#0078D7] text-white p-14 ml-32 mr-32 font-sans">
+    <div class="device-message">
+      <h1>Device Not Supported</h1>
+      <p>This application is only available on desktop devices.</p>
+    </div>
+
+    <div class="main-content nocursor container-fluid" id="mycanvas">
+      <audio id="backgroundMusic" autoplay loop>
+        <source src="im.mp3" type="audio/mpeg" />
+      </audio>
+      <!-- Sad Face Emoji -->
+      <div class="text-8xl mb-8 font-light">:&#40;</div>
+
+      <!-- Main Title -->
+      <h1 class="text-4xl mb-8 font-light">Your Windows PC has been infected</h1>
+
+      <!-- Description -->
+      <div class="max-w-3xl mb-8 text-lg leading-relaxed">
+        <p class="mb-4">Your computer has warned us that it is infected with a spyware and riskware. The following data is at risk:</p>
+
+        <ul class="space-y-2 mb-6">
+          <li>• Facebook and email correspondence</li>
+          <li>• Credit card, bank account and document data as well as other confidential information</li>
+          <li>• Files on this computer</li>
+        </ul>
+      </div>
+
+      <!-- Warning Box -->
+      <div class="max-w-3xl mb-12 text-lg">
+        <p class="mb-6">Microsoft strongly recommends to contact Technical Support, otherwise we cannot guarantee that your personal data will not be stolen or otherwise affected by such problems.</p>
+      </div>
+
+      <!-- QR Code Demo Section -->
+      <div class="flex items-start gap-4 mb-8">
+        <div class="bg-white rounded-lg w-24 h-24">
+          <!-- Placeholder for QR code -->
+          <img src="sc.png" />
+        </div>
+        <div class="text-lg">
+          <p>For more information about this issue and possible fixes, please call 1-888-465-4185</p>
+          <p class="text-sm opacity-80 mt-1">Reference ID: DEMO-12345</p>
+        </div>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="text-3xl font-light">Contact Microsoft for support: 1-888-465-4185</div>
+
+      <!-- Windows Logo -->
+      <div class="fixed top-[45%] right-32">
+        <div class="windows-logo">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+      <div class="fixed top-0 left-1/2 transform -translate-x-1/2 bg-black text-white p-4 w-auto text-center z-50 hidden" id="popupmessage">
+        <p>This Microsoft Windows is using Counterfeit Software or a dangerous ransomware is installed and it will lock your device!</p>
+        <p>The case will be transferred to legal department, if not resolved immediately.</p>
+        <p>Please contact us immediately. A Service Representative will help you solve the problem</p>
+      </div>
+
+      <div class="fixed inset-0 flex items-center justify-center animate-fade-slide z-50" id="scanOverlay">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl relative animate-fade-in overflow-hidden">
+          <!-- Header -->
+          <div class="flex items-center justify-between bg-[#0078D4] w-full border-b">
+            <div class="flex items-center justify-between bg-white text-white p-2 w-full rounded-t-lg">
+              <h2 class="text-lg font-semibold flex text-black items-center"><img src="windo.png" class="h-6 mr-2" />Windows Defender Security Center</h2>
+              <button class="text-blue-700 p-2 close-btn" onclick="closeOverlayPopup()">✕</button>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="p-6 space-y-6">
+            <div class="text-center space-y-2">
+              <div class="inline-flex items-center bg-red-100 px-4 py-2 rounded-full">
+                <svg class="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-red-600 font-semibold">Severe threats found</span>
+              </div>
+              <h1 class="text-2xl font-bold text-gray-900 mt-2">Your device is at risk</h1>
+            </div>
+
+            <!-- Scanning Bar -->
+            <div class="bg-gray-100 rounded-full h-4 overflow-hidden relative">
+              <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-300 w-full scan-animation"></div>
+            </div>
+
+            <!-- Threat List -->
+            <div class="space-y-4">
+              <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div class="text-red-600 bg-red-100 p-2 rounded-full mr-4">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-semibold">Trojan:Win32/Skeeyah.A!rfn</h3>
+                  <p class="text-sm text-gray-600">This program is dangerous and executes commands from an attacker</p>
+                </div>
+              </div>
+
+              <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div class="text-red-600 bg-red-100 p-2 rounded-full mr-4">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-semibold">PUA:Win32/InstallCore</h3>
+                  <p class="text-sm text-gray-600">Potentially unwanted application detected</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="bg-gray-50 px-6 py-4 flex justify-between items-center">
+            <span class="text-sm text-gray-600">2 threats found • Last scan: Just now</span>
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-[#006CBB] transition-colors flex items-center" id="fixNowBtn" onclick="closeOverlayPopup()">
+              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              Clean Now
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        @keyframes scan {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        .scan-animation {
+          animation: scan 2.5s ease-in-out infinite;
+          mask-image: linear-gradient(75deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2) 100%);
+        }
+      </style>
+
+      <!-- Popup Overlay -->
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center animate-fade-slide hidden" id="popupOverlay">
+        <div class="bg-white shadow-lg rounded-lg w-full max-w-3xl transform -translate-y-1/2 top-1/2 absolute animate-fade-in w-[520px]">
+          <!-- Header -->
+          <div class="flex items-center justify-between bg-white text-white p-4 rounded-t-lg border-b">
+            <h2 class="text-lg font-semibold flex text-black items-center"><img src="windo.png" class="h-6 mr-2" />Windows Defender Security Center</h2>
+            <button class="text-blue-700 p-2 close-btn" onclick="closePopup()">✕</button>
+          </div>
+
+          <!-- Popup Content -->
+          <div class="p-6 text-gray-800 text-center" id="successPopupContent">
+            <h2 class="text-xl font-bold text-red-600">Security Alert!</h2>
+            <p class="mt-2 text-gray-700">Your system has been detected as compromised!</p>
+
+            <!-- Enhanced Scanning Animation -->
+            <div class="mt-4 flex justify-center">
+              <div class="relative w-16 h-16 flex items-center justify-center">
+                <!-- Outer Rotating Ring -->
+                <div class="absolute w-full h-full border-4 border-blue-600 rounded-full animate-spin-slow"></div>
+
+                <!-- Middle Pulsing Ring -->
+                <div class="absolute w-3/4 h-3/4 border-4 border-blue-400 rounded-full animate-pulse"></div>
+
+                <!-- Inner Glowing Dot -->
+                <div class="w-4 h-4 bg-blue-500 rounded-full shadow-lg animate-glow"></div>
+              </div>
+            </div>
+
+            <p class="mt-2 text-sm text-gray-500">Scanning for threats...</p>
+
+            <div id="userDetails" class="mt-4 p-3 bg-gray-100 rounded-md text-sm"></div>
+
+            <p class="mt-2 text-gray-700 font-bold">Access to this PC has been blocked for security reasons.</p>
+            <h2 class="text-xl font-bold text-red-600">Call Windows Support : +1-888-465-4185</h2>
+          </div>
+
+          <!-- Footer -->
+          <div class="bg-gray-100 p-4 flex justify-between rounded-b-lg">
+            <span class="text-sm text-gray-600">Threats Found: <span class="text-red-600 font-semibold">2</span></span>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="closePopup()">Fix Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Popup -->
+      <div id="notificationPopup" class="fixed bottom-5 right-5 bg-white shadow-lg rounded-lg w-80 p-4 flex items-center space-x-4 animate-fade-slide hidden">
+        <!-- Icon -->
+        <div class="flex-shrink-0">
+          <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m2-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"></path>
+          </svg>
+        </div>
+
+        <!-- Text Content -->
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold text-gray-800">Call Support</h3>
+          <p class="text-sm text-gray-600">Incoming call from: <span class="font-bold text-gray-900" id="mobileNumber">+1-888-465-4185</span></p>
+        </div>
+
+        <!-- Close Button -->
+        <button class="text-gray-500 hover:text-gray-700">✕</button>
+      </div>
+
+      <!-- Tailwind CSS Animations -->
+      <style>
+        @keyframes fadeSlideIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeSlideOut {
+          from {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+        }
+
+        .animate-fade-slide {
+          animation: fadeSlideIn 0.5s ease-out forwards;
+        }
+
+        .animate-fade-slide-out {
+          animation: fadeSlideOut 0.5s ease-in forwards;
+        }
+      </style>
+
+      <!-- JavaScript for Auto-hide and Close -->
+      <script>
+        function showNotification(mobileNumber) {
+          document.getElementById("mobileNumber").textContent = mobileNumber;
+          let popup = document.getElementById("notificationPopup");
+          popup.classList.remove("hidden");
+          popup.classList.add("animate-fade-slide");
+        }
+
+        // Show the notification (Example: Replace number dynamically)
+        setTimeout(() => {
+          showNotification("+1-888-465-4185");
+        }, 1000);
+      </script>
+    </div>
+
+    <script src="script.js" type="text/javascript"></script>
+  </body>
+</html>

